@@ -1,0 +1,18 @@
+<div style="text-align:center; margin-bottom: 20px;">
+  <h1>
+    Welcome to {{title}}!
+  </h1>
+</div>
+
+<div style="text-align: center;">
+  <igx-grid [data]="localData" width="1200px" height="600px" style="margin: auto" [allowFiltering]="false">
+    <igx-column field="Country" dataType="string"></igx-column>
+    <igx-column field="Gender" dataType="string"></igx-column>
+    <igx-column field="Age Group" dataType="string"></igx-column>
+    <igx-column field="2019" dataType="number" [editable]="true"></igx-column>
+    <igx-column field="2020" dataType="number" [editable]="true"></igx-column>
+    <igx-column field="2021" dataType="number" [editable]="true"></igx-column>
+    <igx-column field="2022" dataType="number" [editable]="true"></igx-column>
+    <igx-column field="2023" dataType="number" [editable]="true"></igx-column>
+  </igx-grid>
+</div>
