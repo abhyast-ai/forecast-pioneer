@@ -32,7 +32,7 @@ The prototype showcases an advanced grid layout similar to a Pivot table, organi
 [Specify submission requirements and criteria for evaluating prototypes...]
 
 ### Tech Stack & Future Assumptions 🛠️
-- Angular version: 15.8.2
+- Angular version: 15.2.8
 - Utilizes MongoDB for efficient data handling.
 - Future improvements: UI enhancements, cloud deployment for scalability.
 
