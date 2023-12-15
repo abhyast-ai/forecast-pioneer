@@ -1,0 +1,15 @@
+/* dynamic-form.component.css */
+
+.row {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .cell-container {
+    display: flex;
+  }
+  
+  .cell {
+    margin-right: 10px;
+  }
+  
