@@ -1,6 +1,6 @@
 # Forecast Pioneer 📊🚀
 
-Welcome to the Forecast Pioneer repository, home to an innovative prototype designed to organize and manage forecasts effectively using an intuitive grid-based system.
+Welcome to the Forecast Pioneer repository, home to an innovative prototype designed to organize and manage forecasts effectively using an grid-based system.
 
 ## Application Prototype  📝
 
@@ -12,11 +12,11 @@ Develop an application prototype to view and manage forecasts for various attrib
 The prototype showcases an advanced grid layout similar to a Pivot table, organizing forecasts by periods (columns) and offering multi-level drill-downs (rows) for detailed analysis.
 
 #### Expected Interface 🖥️
-![Expected Interface](content.png)
+<img src="content.png" alt="Expected Interface" width="600">
 🔍 The anticipated interface demonstrates a configurable grid enabling diverse drill-down levels and seamless value aggregation upon modifications.
 
 #### Actual Prototype 🚀
-![Actual Prototype](content.png)
+<img src="content.png" alt="Actual Prototype" width="600">
 🌟 Our application prototype mirrors the expected design, ensuring configurable drill-downs, automated value aggregation, and efficient data copying functionalities between cells.
 
 ### Rules & Requirements 📋
@@ -39,4 +39,3 @@ The prototype showcases an advanced grid layout similar to a Pivot table, organi
 ### Deployment & Security Features 🔒
 - Deployable on cloud platforms for scalability.
 - Implements user authentication and authorization for secure access.
-
