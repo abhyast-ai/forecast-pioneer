@@ -1,20 +1,27 @@
 <form [formGroup]="dynamicForm" (submit)="onSubmit()">
-    <div formArrayName="rows">
-      <div *ngFor="let row of dynamicForm.get('rows').controls; let i = index" class="row">
-        <div [formGroupName]="i">
-          <div formArrayName="cells" class="cell-container">
-            <div *ngFor="let cell of row.get('cells').controls; let j = index" class="cell">
-              <input [formControl]="cell" placeholder="Cell {{ j + 1 }}">
-            </div>
+  <div formArrayName="rows">
+    <div
+      *ngFor="let row of dynamicForm.get('rows').controls; let i = index"
+      class="row"
+    >
+      <div [formGroupName]="i">
+        <div formArrayName="cells" class="cell-container">
+          <div
+            *ngFor="let cell of row.get('cells').controls; let j = index"
+            class="cell"
+          >
+            <input
+              [formControl]="cell"
+              placeholder="Cell {{ j + 1 }}"
+              (input)="cellValueChange(i, j, $event)"
+            />
           </div>
-          <button type="button" (click)="addCell(row)">Add Cell</button>
         </div>
+        <button type="button" (click)="addCell(row)">Add Cell</button>
       </div>
     </div>
-    <button type="button" (click)="addRow()">Add Row</button>
-    <input type="submit">
-  </form>
-  
-  
+  </div>
+  <button type="button" (click)="addRow()">Add Row</button>
 
-
+  <input type="submit" />
+</form>
