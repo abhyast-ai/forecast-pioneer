@@ -1,0 +1,28 @@
+<div class="content">
+    <!-- The AG Grid component, with Dimensions, CSS Theme, Row Data, and Column Definition -->
+    <!-- <ag-grid-angular
+      style="width: 100%; height: 350px;"
+      [class]="themeClass"
+      [rowData]="rowData"
+      [columnDefs]="colDefs"
+    >
+    </ag-grid-angular> -->
+  </div>
+
+  <!-- app.component.html -->
+<form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="rows" *ngFor="let row of dynamicForm.get('rows').controls; let i = index">
+      <div [formGroupName]="i">
+        <div formArrayName="cells" *ngFor="let cell of row.get('cells').controls; let j = index">
+          <div [formGroupName]="j">
+            <!-- Input field for each cell -->
+            <input type="text" [formControlName]="j" (input)="cellValueChange(i, j, $event)" />
+          </div>
+        </div>
+        <button type="button" (click)="addCell(row)">Add Cell</button>
+      </div>
+    </div>
+    <button type="button" (click)="addRow()">Add Row</button>
+    <button type="submit">Submit</button>
+  </form>
+  
