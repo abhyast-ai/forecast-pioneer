@@ -1,28 +1,50 @@
-<div class="content">
-    <!-- The AG Grid component, with Dimensions, CSS Theme, Row Data, and Column Definition -->
-    <!-- <ag-grid-angular
-      style="width: 100%; height: 350px;"
-      [class]="themeClass"
-      [rowData]="rowData"
-      [columnDefs]="colDefs"
-    >
-    </ag-grid-angular> -->
-  </div>
-
-  <!-- app.component.html -->
-<form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
-    <div formArrayName="rows" *ngFor="let row of dynamicForm.get('rows').controls; let i = index">
-      <div [formGroupName]="i">
-        <div formArrayName="cells" *ngFor="let cell of row.get('cells').controls; let j = index">
-          <div [formGroupName]="j">
-            <!-- Input field for each cell -->
-            <input type="text" [formControlName]="j" (input)="cellValueChange(i, j, $event)" />
-          </div>
-        </div>
-        <button type="button" (click)="addCell(row)">Add Cell</button>
-      </div>
+<div class="content" style="margin: 20px; ">
+  <!-- The AG Grid component, with Dimensions, CSS Theme, Row Data, and Column Definition -->
+  <div style="margin-bottom: 20px;">
+    <input
+      type="text"
+      placeholder="Enter Column Label"
+      [(ngModel)]="newColumnLabel"
+    />
+    <button (click)="addColumn(newColumnLabel)" style="margin-left: 10px;">
+      <i class="bi bi-plus"></i> Add Column <!-- Bootstrap icon -->
+    </button>
+    <div>
+      <button (click)="addRow()" style="margin-top: 10px;">
+        <i class="fas fa-plus-circle" style="color: blue;"></i> Add Row <!-- Font Awesome icon -->
+      </button>
     </div>
-    <button type="button" (click)="addRow()">Add Row</button>
-    <button type="submit">Submit</button>
-  </form>
+  </div>
   
+
+  <div style="height: 500px">
+    <ag-grid-angular
+      style="width: 100%; height: 600px"
+      class="ag-theme-quartz-dark"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      (gridReady)="onGridReady($event)"
+    ></ag-grid-angular>
+    <input
+      type="number"
+      placeholder="Enter index of column to edit"
+      [(ngModel)]="editIndex"
+      style="margin-top: 10px;"
+    />
+    <input type="text" placeholder="Enter new label" [(ngModel)]="newLabel" />
+    <button (click)="editColumnLabel(editIndex, newLabel)">
+      <i class="bi bi-pencil-fill"></i> Edit Label <!-- Bootstrap icon -->
+    </button>
+
+    <!-- Button to delete a column -->
+    <input
+      type="number"
+      placeholder="Enter index of column to delete"
+      [(ngModel)]="deleteIndex"
+      style="margin-top: 10px;"
+    />
+    <button (click)="deleteColumn(deleteIndex)">
+      <i class="bi bi-trash-fill" style="color: red;"></i> Delete Column <!-- Bootstrap icon -->
+    </button>
+  </div>
+</div>

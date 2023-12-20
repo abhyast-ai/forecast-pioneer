@@ -1,134 +1,101 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ColDef } from 'ag-grid-community';
-
+import { ColDef, GridApi } from 'ag-grid-community';
 
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  styleUrls: ['./grid.component.css'],
 })
+export class GridComponent implements OnInit {
+  gridApi!: GridApi;
+  columnDefs: any[] = [];
+  rowData: any[] = [];
+  themeClass = 'ag-theme-quartz-dark';
+  newColumnLabel: string = '';
+  // Properties for capturing user input
+  editIndex: number = 0;
+  deleteIndex: number = 0;
+  newLabel: string = '';
 
 
-export class GridComponent {
-//   themeClass =
-//   "ag-theme-quartz-dark";
-
-// // Row Data: The data to be displayed.
-// rowData: any[] = [
-//   {
-//     mission: 'Voyager',
-//     company: 'NASA',
-//     location: 'Cape Canaveral',
-//     date: '1977-09-05',
-//     rocket: 'Titan-Centaur ',
-//     price: 86580000,
-//     successful: true,
-//   },
-//   {
-//     mission: 'Apollo 13',
-//     company: 'NASA',
-//     location: 'Kennedy Space Center',
-//     date: '1970-04-11',
-//     rocket: 'Saturn V',
-//     price: 3750000,
-//     successful: false,
-//   },
-//   {
-//     mission: 'Falcon 9',
-//     company: 'SpaceX',
-//     location: 'Cape Canaveral',
-//     date: '2015-12-22',
-//     rocket: 'Falcon 9',
-//     price: 9750000,
-//     successful: true,
-//   },
-// ];
-
-// // Column Definitions: Defines & controls grid columns.
-// colDefs: ColDef<any>[] = [
-//   { field: 'mission' },
-//   { field: 'company' },
-//   { field: 'location' },
-//   { field: 'date' },
-//   { field: 'price' },
-//   { field: 'successful' },
-//   { field: 'rocket' },
-// ];
-dynamicForm: any;
-
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit() {
-    this.dynamicForm = this.fb.group({
-      rows: this.fb.array([this.createRow()]),
-    });
+  onGridReady(params: any): void {
+    this.gridApi = params.api;
+    this.gridApi.setGridOption('columnDefs', this.columnDefs);
   }
 
-  createRow(): FormGroup {
-    return this.fb.group({
-      cells: this.fb.array([this.createCell()]),
-    });
+  ngOnInit(): void {
+    // Initialize column definitions with default settings
+    this.columnDefs = [];
+    this.rowData = [];
   }
-
-  createCell(): FormControl {
-    return this.fb.control('');
-  }
-
-  addCell(row: FormGroup) {
-    const cells = row.get('cells') as FormArray;
-    cells.push(this.createCell());
-  }
-
-  addRow() {
-    const rows = this.dynamicForm.get('rows') as FormArray;
-    rows.push(this.createRow());
-  }
-
-  onSubmit() {
-    console.log(this.dynamicForm.get('rows')?.value);
-  }
-
-  evaluateFormula(formula: string): number {
-    const match = formula.match(/(\w)(\d+):(\w)(\d+)/);
-    if (match) {
-      const startColumn = match[1].charCodeAt(0) - 'A'.charCodeAt(0);
-      const startRow = parseInt(match[2], 10);
-      const endColumn = match[3].charCodeAt(0) - 'A'.charCodeAt(0);
-      const endRow = parseInt(match[4], 10);
-
-      let sum = 0;
-      for (let i = startRow; i <= endRow; i++) {
-        const row = this.dynamicForm
-          .get('rows')
-          ?.get(i.toString()) as FormGroup;
-        if (row) {
-          const cellValue = row
-            .get('cells')
-            ?.get(startColumn.toString())?.value;
-          if (cellValue !== undefined && !isNaN(cellValue)) {
-            sum += +cellValue;
-          }
-        }
-      }
-      return sum;
+  // Function to add columns dynamically based on user input
+  addColumn(columnLabel: string): void {
+    const newColDef: any = {
+      headerName: columnLabel,
+      field: columnLabel.toLowerCase(),
+      filter: 'agTextColumnFilter', // Enable text filter for this column
+      editable: true, // Allow editing in this column
+    };
+    this.columnDefs.push(newColDef);
+    this.gridApi.setGridOption('columnDefs', this.columnDefs); // Update columnDefs directly
+    this.newColumnLabel = '';
+    // If rowData is empty, initialize it with an empty object for the added column
+    if (this.rowData.length === 0) {
+      this.rowData.push({ [newColDef.field]: '' });
+    } else {
+      // Add the new field to existing row objects
+      this.rowData.forEach((row) => {
+        row[newColDef.field] = '';
+      });
     }
 
-    return 0; // Invalid formula or range
+    this.gridApi.setGridOption('rowData', this.rowData);
+  }
+  
+  // Function to add a new row to the rowData
+  addRow(): void {
+    const newRow: any = {};
+    this.columnDefs.forEach((colDef) => {
+      newRow[colDef.field] = '';
+    });
+    this.rowData.push(newRow);
+    this.gridApi.setRowData(this.rowData);
   }
 
-  cellValueChange(i: any, j: any, e: any) {
-    const value = e.target.value;
-    const formulaMatch = value.match(/^=Sum\((\w\d+:\w\d+)\)$/);
-    if (formulaMatch) {
-      const range = formulaMatch[1];
-      const sum = this.evaluateFormula(range);
-      const currentRow = this.dynamicForm
-        .get('rows')
-        ?.get(i.toString()) as FormGroup;
-      const currentCell = currentRow?.get('cells')?.get(j.toString());
-      if (currentCell) {
-        currentCell.setValue(sum);
+  //Function to edit the labels
+  editColumnLabel(index: number, newLabel: string): void {
+    if (index >= 0 && index < this.columnDefs.length) {
+      const field = this.columnDefs[index].field;
+      if (field !== undefined) {
+        this.columnDefs[index].headerName = newLabel;
+        this.gridApi.setGridOption('columnDefs', this.columnDefs);
+
+        // Update the row data keys if the field name changes
+        this.rowData.forEach((row) => {
+          if (row.hasOwnProperty(field)) {
+            row[newLabel] = row[field];
+            delete row[field];
+          }
+        });
+        this.gridApi.setGridOption('rowData', this.rowData);
+      }
+    }
+  }
+
+  //Function to delete the columns
+  deleteColumn(index: number): void {
+    if (index >= 0 && index < this.columnDefs.length) {
+      const field = this.columnDefs[index].field;
+      if (field !== undefined) {
+        this.columnDefs.splice(index, 1);
+        this.gridApi.setGridOption('columnDefs', this.columnDefs);
+
+        // Remove the field from row data
+        this.rowData.forEach((row) => {
+          delete row[field];
+        });
+        this.gridApi.setRowData(this.rowData);
       }
     }
   }
