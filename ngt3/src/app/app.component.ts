@@ -1,67 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-// import { CsvService } from './csv.service';
-// import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-root',
-//   templateUrl: './app.component.html',
-//   styleUrls: ['./app.component.css']
-// })
-// export class AppComponent implements OnInit {
-//   dynamicForm:any;
-
-//   constructor(private fb: FormBuilder) {}
-
-//   ngOnInit() {
-//     this.dynamicForm = this.fb.group({
-//       rows: this.fb.array([this.createRow()])
-//     });
-//   }
-//   createRow(): FormGroup {
-//     return this.fb.group({
-//       cells: this.fb.array([this.createCell()])
-//     });
-//   }
-//   createCell(): FormControl {
-//     return this.fb.control('');
-//   }
-//   addCell(row: FormGroup) {
-//     const cells = row.get('cells') as FormArray;
-//     cells.push(this.createCell());
-//   }
-//   addRow() {
-//     const rows = this.dynamicForm.get('rows') as FormArray;
-//     rows.push(this.createRow());
-//   }
-//   onSubmit(){
-//     console.log(this.dynamicForm.get('rows').value);
-//   }
-//   getAggregate(i:any,j:any){
-//     let sum=0;
-//    const currentRow = this.dynamicForm.get('rows').get(i.toString()) as FormGroup;
-//    const currentCell = currentRow?.get('cells')?.get(j.toString());
-//    for(let k=1;k<=i-1;k++){
-//     const row = this.dynamicForm.get('rows').get(k.toString()) as FormGroup;
-//     const cellValue = row?.get('cells')?.get(j.toString())?.value;
-
-//     if (cellValue !== undefined) {
-//       console.log(cellValue);
-
-//       sum+=+cellValue;
-//       // Do something with cellValue
-//     }
-//     if (currentCell) {
-//       currentCell.setValue(sum);
-//     }
-//    }
-//   }
-//   cellValueChange(i:any,j:any,e:any){
-//     const value=e.target.value;
-//     if(value.includes("=Sum")){
-//       this.getAggregate(i,j);
-//     }
-//   }
-// }
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 
@@ -106,39 +42,152 @@ export class AppComponent implements OnInit {
   }
 
   evaluateFormula(formula: string): number {
-    const match = formula.match(/(\w)(\d+):(\w)(\d+)/);
-    if (match) {
-      const startColumn = match[1].charCodeAt(0) - 'A'.charCodeAt(0);
-      const startRow = parseInt(match[2], 10);
-      const endColumn = match[3].charCodeAt(0) - 'A'.charCodeAt(0);
-      const endRow = parseInt(match[4], 10);
+    const cellRefs = formula.split(',').map((ref) => ref.trim());
 
-      let sum = 0;
-      for (let i = startRow; i <= endRow; i++) {
-        const row = this.dynamicForm
-          .get('rows')
-          ?.get(i.toString()) as FormGroup;
-        if (row) {
-          const cellValue = row
-            .get('cells')
-            ?.get(startColumn.toString())?.value;
-          if (cellValue !== undefined && !isNaN(cellValue)) {
-            sum += +cellValue;
+    let sum = 0;
+    for (const cellRef of cellRefs) {
+      const rangeMatch = cellRef.match(/(\w\d+:\w\d+)/);
+      if (rangeMatch) {
+        const [startCell, endCell] = rangeMatch[0].split(':');
+        const start = this.getCellCoordinates(startCell);
+        const end = this.getCellCoordinates(endCell);
+
+        for (let i = start.row; i <= end.row; i++) {
+          for (let j = start.column; j <= end.column; j++) {
+            const rowFormGroup = this.dynamicForm
+              .get('rows')
+              ?.get(i.toString()) as FormGroup;
+            if (rowFormGroup) {
+              const cellValue = rowFormGroup
+                .get('cells')
+                ?.get(j.toString())?.value;
+              if (cellValue !== undefined && !isNaN(cellValue)) {
+                sum += +cellValue;
+              }
+            }
+          }
+        }
+      } else {
+        const singleCell = cellRef.match(/(\w\d+)/);
+        if (singleCell) {
+          const [column, row] =
+            singleCell[0].match(/([A-Za-z]+)(\d+)/)?.slice(1) || [];
+          if (column && row) {
+            const rowIndex = parseInt(row, 10);
+            const columnIndex = column.charCodeAt(0) - 'A'.charCodeAt(0);
+
+            const rowFormGroup = this.dynamicForm
+              .get('rows')
+              ?.get(rowIndex.toString()) as FormGroup;
+            if (rowFormGroup) {
+              const cellValue = rowFormGroup
+                .get('cells')
+                ?.get(columnIndex.toString())?.value;
+              if (cellValue !== undefined && !isNaN(cellValue)) {
+                sum += +cellValue;
+              }
+            }
           }
         }
       }
-      return sum;
     }
 
-    return 0; // Invalid formula or range
+    return sum;
+  }
+  copy(formula: string, assignedValue: number) {
+    const cellRefs = formula.split(',').map((ref) => ref.trim());
+    for (const cellRef of cellRefs) {
+      const rangeMatch = cellRef.match(/(\w\d+:\w\d+)/);
+      if (rangeMatch) {
+        const [startCell, endCell] = rangeMatch[0].split(':');
+        const start = this.getCellCoordinates(startCell);
+        const end = this.getCellCoordinates(endCell);
+
+        for (let i = start.row; i <= end.row; i++) {
+          for (let j = start.column; j <= end.column; j++) {
+            const rowFormGroup = this.dynamicForm
+              .get('rows')
+              ?.get(i.toString()) as FormGroup;
+            if (rowFormGroup) {
+              const cell = rowFormGroup.get('cells')?.get(j.toString());
+              cell?.setValue(assignedValue);
+            }
+          }
+        }
+      }
+    }
+  }
+  getCellCoordinates(cell: string): { row: number; column: number } {
+    const [column, row] = cell.match(/([A-Za-z]+)(\d+)/)?.slice(1) || [];
+    return {
+      row: parseInt(row, 10),
+      column: column.charCodeAt(0) - 'A'.charCodeAt(0),
+    };
+  }
+
+  distribute(formula: string, assignedValue: number): any {
+    const cellRefs = formula.split(',').map((ref) => ref.trim());
+    let values = [];
+    let p: any;
+    for (const cellRef of cellRefs) {
+      const singleCell = cellRef.match(/([A-Za-z]+)(\d+)/);
+      if (singleCell) {
+        const [column, row] = singleCell.slice(1);
+        if (column && row) {
+          const rowIndex = parseInt(row, 10);
+          const columnIndex = column.charCodeAt(0) - 'A'.charCodeAt(0);
+          p = column;
+          const rowFormGroup = this.dynamicForm
+            .get('rows')
+            ?.get(rowIndex.toString()) as FormGroup;
+          if (rowFormGroup) {
+            const cellValue = rowFormGroup
+              .get('cells')
+              ?.get(columnIndex.toString());
+            if (cellValue !== null) {
+              values.push({
+                rowIndex,
+                columnIndex,
+                value: parseInt(cellValue?.value, 10),
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // Calculate total values and ratios
+    const totalValue = values.reduce((sum, cell) => sum + cell.value, 0);
+    const ratios = values.map((cell) => ({
+      rowIndex: cell.rowIndex,
+      ratio: cell.value / totalValue,
+    }));
+
+    // Distribute assigned value based on ratios in a different column
+    const targetColumn = 'B'; // You can adjust this to the desired target column
+    ratios.forEach((cell) => {
+      const distributedValue = Math.round(assignedValue * cell.ratio);
+      const targetColumnIndex = p.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+      const distributedFormGroup = this.dynamicForm
+        .get('rows')
+        ?.get(cell.rowIndex.toString()) as FormGroup;
+      if (distributedFormGroup) {
+        distributedFormGroup
+          .get('cells')
+          ?.get(targetColumnIndex.toString())
+          ?.setValue(distributedValue);
+      }
+    });
   }
 
   cellValueChange(i: any, j: any, e: any) {
     const value = e.target.value;
-    const formulaMatch = value.match(/^=Sum\((\w\d+:\w\d+)\)$/);
+    const formulaMatch = value.match(/^=Sum\(([\w\d:,\s]+)\)$/);
+    const distributeMatch = value.match(/^(\d+)=Distribute\(([\w\d:,\s]+)\)$/);
+    const copyMatch = value.match(/^(\d+)=Copy\(([\w\d:\s]+)\)$/);
     if (formulaMatch) {
-      const range = formulaMatch[1];
-      const sum = this.evaluateFormula(range);
+      const cellRefs = formulaMatch[1];
+      const sum = this.evaluateFormula(cellRefs);
       const currentRow = this.dynamicForm
         .get('rows')
         ?.get(i.toString()) as FormGroup;
@@ -146,6 +195,24 @@ export class AppComponent implements OnInit {
       if (currentCell) {
         currentCell.setValue(sum);
       }
+    } else if (distributeMatch) {
+      const assignedValue = parseInt(distributeMatch[1], 10);
+      const cellRefs = distributeMatch[2];
+      this.distribute(cellRefs, assignedValue);
+      const currentRow = this.dynamicForm
+        .get('rows')
+        ?.get(i.toString()) as FormGroup;
+      const currentCell = currentRow?.get('cells')?.get(j.toString());
+      currentCell?.setValue(assignedValue);
+    } else if (copyMatch) {
+      const assignedValue = parseInt(copyMatch[1], 10);
+      const cellRefs = copyMatch[2];
+      this.copy(cellRefs, assignedValue);
+      const currentRow = this.dynamicForm
+        .get('rows')
+        ?.get(i.toString()) as FormGroup;
+      const currentCell = currentRow?.get('cells')?.get(j.toString());
+      currentCell?.setValue(assignedValue);
     }
   }
 }
