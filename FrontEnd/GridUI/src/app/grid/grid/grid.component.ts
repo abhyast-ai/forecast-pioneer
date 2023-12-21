@@ -22,6 +22,7 @@ export class GridComponent implements OnInit {
   onGridReady(params: any): void {
     this.gridApi = params.api;
     this.gridApi.setGridOption('columnDefs', this.columnDefs);
+    this.gridApi.setGridOption('rowData', this.rowData);
   }
 
   ngOnInit(): void {
@@ -98,5 +99,11 @@ export class GridComponent implements OnInit {
         this.gridApi.setRowData(this.rowData);
       }
     }
+  }
+
+  // Method to save and print values
+  onSave(): void {
+    console.log('Column Definitions:', this.columnDefs);
+    console.log('Row Data:', this.rowData);
   }
 }

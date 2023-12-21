@@ -1,21 +1,22 @@
-<div class="content" style="margin: 20px; ">
+<div class="content" style="margin: 20px">
   <!-- The AG Grid component, with Dimensions, CSS Theme, Row Data, and Column Definition -->
-  <div style="margin-bottom: 20px;">
+  <div style="margin-bottom: 20px">
     <input
       type="text"
       placeholder="Enter Column Label"
       [(ngModel)]="newColumnLabel"
     />
-    <button (click)="addColumn(newColumnLabel)" style="margin-left: 10px;">
-      <i class="bi bi-plus"></i> Add Column <!-- Bootstrap icon -->
+    <button (click)="addColumn(newColumnLabel)" style="margin-left: 10px">
+      <i class="bi bi-plus"></i> Add Column
+      <!-- Bootstrap icon -->
     </button>
     <div>
-      <button (click)="addRow()" style="margin-top: 10px;">
-        <i class="fas fa-plus-circle" style="color: blue;"></i> Add Row <!-- Font Awesome icon -->
+      <button (click)="addRow()" style="margin-top: 10px">
+        <i class="fas fa-plus-circle" style="color: blue"></i> Add Row
+        <!-- Font Awesome icon -->
       </button>
     </div>
   </div>
-  
 
   <div style="height: 500px">
     <ag-grid-angular
@@ -29,11 +30,12 @@
       type="number"
       placeholder="Enter index of column to edit"
       [(ngModel)]="editIndex"
-      style="margin-top: 10px;"
+      style="margin-top: 10px"
     />
     <input type="text" placeholder="Enter new label" [(ngModel)]="newLabel" />
     <button (click)="editColumnLabel(editIndex, newLabel)">
-      <i class="bi bi-pencil-fill"></i> Edit Label <!-- Bootstrap icon -->
+      <i class="bi bi-pencil-fill"></i> Edit Label
+      <!-- Bootstrap icon -->
     </button>
 
     <!-- Button to delete a column -->
@@ -41,10 +43,16 @@
       type="number"
       placeholder="Enter index of column to delete"
       [(ngModel)]="deleteIndex"
-      style="margin-top: 10px;"
+      style="margin-top: 10px"
     />
     <button (click)="deleteColumn(deleteIndex)">
-      <i class="bi bi-trash-fill" style="color: red;"></i> Delete Column <!-- Bootstrap icon -->
+      <i class="bi bi-trash-fill" style="color: red"></i> Delete Column
+      <!-- Bootstrap icon -->
+    </button>
+
+    <!-- Save Button with Bootstrap styling and icon -->
+    <button class="btn btn-primary" (click)="onSave()" style="margin-left: 10px">
+      <i class="bi bi-save"></i> Save
     </button>
   </div>
 </div>

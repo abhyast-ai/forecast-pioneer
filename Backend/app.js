@@ -1,7 +1,11 @@
 const express = require("express");
 const session = require('express-session');
-
+const cors=require('cors');
+const gridsRouter= require('./Servers/Routes/grids')
 const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Configure session middleware
 app.use(
@@ -22,13 +26,11 @@ app.use(express.urlencoded({ extended: true })); ///seting the url automation
 app.use(express.json()); ///to accept json format in data
 
 ///Provide a port number for the server to start
-const port = 4000 || process.env.port;
+const port = 4000 || process.env.PORT;
 
 ///for importing the router module
-const gridsRouter = require("./Servers/Routes/grids");
-
 ///setting up routes
-app.use(gridsRouter);
+app.use('/',gridsRouter);
 
 
 //allowing the server to start on the particular port

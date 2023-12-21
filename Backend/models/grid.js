@@ -1,15 +1,21 @@
-//importing mongoose
-const mongoose = require("mongoose")
-// schema represents the structure of a particular document
-// Each schema maps to a MongoDB collection
-const { Schema } = mongoose;
+const mongoose = require('mongoose');
 
-//Student schema
-const gridSchema = new Schema({
-  headerName:String,
-  field:String, 
+// Define Schemas
+const ColumnSchema = new mongoose.Schema({
+  label: String,
+  field: String, 
+  filter: Boolean,
+  editable: Boolean,
 });
 
-//exporting the model
+const Column = mongoose.model('Column', ColumnSchema);
 
-module.exports = mongoose.model("Grid", gridSchema)
+// Row schema represents the rows in the grid
+const RowSchema = new mongoose.Schema({
+  // Modify 'fields' structure as needed based on actual field types
+  fields: { type: Map, of: mongoose.Schema.Types.Mixed },
+});
+
+const Row = mongoose.model('Row', RowSchema);
+
+module.exports = { Column, Row };
