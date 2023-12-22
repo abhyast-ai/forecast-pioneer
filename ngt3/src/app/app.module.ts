@@ -4,10 +4,18 @@ import {HttpClientModule} from '@angular/common/http'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { FormulasComponent } from './components/formulas/formulas.component';
+import { DatasheetComponent } from './components/datasheet/datasheet.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DashboardComponent,
+    FormulasComponent,
+    DatasheetComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-<form [formGroup]="dynamicForm" (submit)="onSubmit()">
+<!-- <form [formGroup]="dynamicForm" (submit)="onSubmit()">
   <div formArrayName="rows">
     <div
       *ngFor="let row of dynamicForm.get('rows').controls; let i = index"
@@ -24,4 +24,9 @@
   <button type="button" (click)="addRow()">Add Row</button>
 
   <input type="submit" />
-</form>
+</form> -->
+
+
+
+<app-navbar></app-navbar>
+<router-outlet></router-outlet>
