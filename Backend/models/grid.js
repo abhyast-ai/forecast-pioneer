@@ -1,21 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define Schemas
 const ColumnSchema = new mongoose.Schema({
-  label: String,
-  field: String, 
-  filter: Boolean,
-  editable: Boolean,
-});
+  // headerName: String,
+  // field: String,
+  // filter: String,
+  // editable: Boolean,
+}, { strict: false });
 
-const Column = mongoose.model('Column', ColumnSchema);
+const Column = mongoose.model("Column", ColumnSchema);
 
 // Row schema represents the rows in the grid
 const RowSchema = new mongoose.Schema({
-  // Modify 'fields' structure as needed based on actual field types
-  fields: { type: Map, of: mongoose.Schema.Types.Mixed },
-});
+  // Define fields dynamically using the 'Mixed' type
+}, { strict: false });
 
-const Row = mongoose.model('Row', RowSchema);
+
+const Row = mongoose.model("Row", RowSchema);
 
 module.exports = { Column, Row };

@@ -3,6 +3,19 @@ const { Column, Row } = require("../../models/grid"); // Importing models from G
 
 const router = express.Router();
 
+// Endpoint to empty both columns and rows collections
+router.delete('/emptyCollections', async (req, res) => {
+  try {
+    await Promise.all([
+      Column.deleteMany({}), // Delete all documents in the columns collection
+      Row.deleteMany({})     // Delete all documents in the rows collection
+    ]);
+    res.status(200).send('Columns and rows emptied.');
+  } catch (error) {
+    res.status(500).send('Error emptying collections');
+  }
+});
+
 // Add Column
 router.post("/addColumn", async (req, res) => {
   try {
@@ -15,17 +28,40 @@ router.post("/addColumn", async (req, res) => {
   }
 });
 
+// Endpoint to add columns to the database
+router.post('/addColumns', async (req, res) => {
+  try {
+    const columnsData = req.body; 
+    const insertedColumns = await Column.insertMany(columnsData); // Insert columns into the database
+    res.status(201).send('Columns Inserted.'); // Return 'inserted columns' as a response
+  } catch (error) {
+    res.status(500).send('Error adding columns');
+  }
+});
+
+// Endpoint to add rows to the database
+router.post('/addRows', async (req, res) => {
+  try {
+    const rowsData = req.body; 
+    const insertedRows = await Row.insertMany(rowsData); // Insert rows into the database
+    res.status(201).send('Rows Inserted'); // Return 'inserted rows' as a response
+  } catch (error) {
+    res.status(500).send('Error adding rows');
+  }
+});
+
 // Add Row
 router.post("/addRow", async (req, res) => {
   try {
     const rowData = req.body;
-    const newRow = new Row({ fields: rowData });
+    const newRow = new Row(rowData); // Creating a new Row with the dynamic structure
     await newRow.save();
     res.status(201).send("Row added successfully");
   } catch (error) {
     res.status(500).send("Error adding row");
   }
 });
+
 
 // Edit Column
 router.put("/editColumn/:id", async (req, res) => {

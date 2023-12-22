@@ -9,8 +9,19 @@ export class GridService {
   private apiUrl = 'http://localhost:4000';
   constructor(private http: HttpClient) {}
 
+  deleteGrid(): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/emptyCollections`);
+  }
+
+  addColumns(columnData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/addColumns`, columnData);
+  }
+
   addColumn(columnData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/addColumn`, columnData);
+  }
+  addRows(rowData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/addRows`, rowData);
   }
 
   addRow(rowData: any): Observable<any> {

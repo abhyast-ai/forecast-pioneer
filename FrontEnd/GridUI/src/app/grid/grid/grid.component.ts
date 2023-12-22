@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ColDef, GridApi } from 'ag-grid-community';
+import { GridService } from 'src/app/shared/services/grid.service';
 
 @Component({
   selector: 'app-grid',
@@ -18,6 +19,10 @@ export class GridComponent implements OnInit {
   deleteIndex: number = 0;
   newLabel: string = '';
 
+  /**
+   *
+   */
+  constructor(private gridService: GridService) {}
 
   onGridReady(params: any): void {
     this.gridApi = params.api;
@@ -53,7 +58,7 @@ export class GridComponent implements OnInit {
 
     this.gridApi.setGridOption('rowData', this.rowData);
   }
-  
+
   // Function to add a new row to the rowData
   addRow(): void {
     const newRow: any = {};
@@ -96,14 +101,39 @@ export class GridComponent implements OnInit {
         this.rowData.forEach((row) => {
           delete row[field];
         });
-        this.gridApi.setRowData(this.rowData);
+        this.gridApi.setGridOption('rowData', this.rowData);
       }
     }
   }
 
   // Method to save and print values
   onSave(): void {
-    console.log('Column Definitions:', this.columnDefs);
-    console.log('Row Data:', this.rowData);
+    
+    this.gridService.deleteGrid().subscribe(
+      (res) => {
+        console.log(res.statusText);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+
+    this.gridService.addColumns(this.columnDefs).subscribe(
+      (res) => {
+        console.log(res.statusText);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+
+    this.gridService.addRows(this.rowData).subscribe(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 }
