@@ -3,11 +3,12 @@ import { FormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 @Component({
   selector: 'app-datasheet',
   templateUrl: './datasheet.component.html',
-  styleUrls: ['./datasheet.component.css']
+  styleUrls: ['./datasheet.component.css'],
 })
-
 export class DatasheetComponent implements OnInit {
   dynamicForm: any;
+  columnDef: any[] = [];
+  rowData: any[] = [];
 
   constructor(private fb: FormBuilder) {}
 
@@ -38,7 +39,18 @@ export class DatasheetComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.dynamicForm.get('rows')?.value);
+    const rows = this.dynamicForm.get('rows')?.value;
+    // 'rows' contains the array of rows with each row having a 'cells' property
+    (this.columnDef = []), (this.rowData = []);
+    // Extracting 'cells' from the first row as column definition
+    this.columnDef = rows[0]?.cells;
+
+    // Looping through each row, excluding the first row, to gather cell data
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const rowValues = row?.cells;
+      this.rowData.push(rowValues); // Appending cell values from each row (excluding the first row) to rowData using 'push'
+    }
   }
 
   evaluateFormula(formula: string): number {
@@ -52,7 +64,7 @@ export class DatasheetComponent implements OnInit {
         const start = this.getCellCoordinates(startCell);
         const end = this.getCellCoordinates(endCell);
 
-        for (let i = start.row-1; i <= end.row-1; i++) {
+        for (let i = start.row - 1; i <= end.row - 1; i++) {
           for (let j = start.column; j <= end.column; j++) {
             const rowFormGroup = this.dynamicForm
               .get('rows')
@@ -73,7 +85,7 @@ export class DatasheetComponent implements OnInit {
           const [column, row] =
             singleCell[0].match(/([A-Za-z]+)(\d+)/)?.slice(1) || [];
           if (column && row) {
-            const rowIndex = parseInt(row, 10)-1;
+            const rowIndex = parseInt(row, 10) - 1;
             const columnIndex = column.charCodeAt(0) - 'A'.charCodeAt(0);
 
             const rowFormGroup = this.dynamicForm
@@ -135,7 +147,7 @@ export class DatasheetComponent implements OnInit {
       if (singleCell) {
         const [column, row] = singleCell.slice(1);
         if (column && row) {
-          const rowIndex = parseInt(row, 10)-1;
+          const rowIndex = parseInt(row, 10) - 1;
           const columnIndex = column.charCodeAt(0) - 'A'.charCodeAt(0);
           p = column;
           const rowFormGroup = this.dynamicForm
@@ -209,7 +221,7 @@ export class DatasheetComponent implements OnInit {
       currentCell?.setValue(assignedValue);
     } else if (copyMatch) {
       //const assignedValue = parseInt(copyMatch[1], 10);
-      const assignedValue =copyMatch[1]
+      const assignedValue = copyMatch[1];
       const cellRefs = copyMatch[2];
       this.copy(cellRefs, assignedValue);
       const currentRow = this.dynamicForm
@@ -223,17 +235,43 @@ export class DatasheetComponent implements OnInit {
   getColumnName(index: number): string {
     const charCodeA = 'A'.charCodeAt(0);
     const columnIndex = index + 1; // Assuming 1-based indexing
-    const columnName = String.fromCharCode(charCodeA + index % 26);
-   
+    const columnName = String.fromCharCode(charCodeA + (index % 26));
+
     // If you want to handle multiple letters for larger indices (e.g., AA, AB, AC, ...)
-    
+
     if (columnIndex > 26) {
-      const firstLetter = String.fromCharCode(charCodeA + Math.floor((index - 1) / 26) - 1);
+      const firstLetter = String.fromCharCode(
+        charCodeA + Math.floor((index - 1) / 26) - 1
+      );
       const secondLetter = columnName;
       return firstLetter + secondLetter;
     }
-   
+
     return columnName;
   }
-}
 
+  // Function to convert data to CSV format
+  convertToCSV(data: string[][]): string {
+    const header = this.columnDef.join(','); // Create CSV header
+    const rows = data.map((row) => row.join(',')); // Convert rows to CSV format
+    return `${header}\n${rows.join('\n')}`; // Combine header and rows
+  }
+
+  // Function to download CSV file
+  downloadCSV(): void {
+    const csvData = this.convertToCSV(this.rowData);
+
+    // Create anchor element and trigger download
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'prototype.csv');
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+}
