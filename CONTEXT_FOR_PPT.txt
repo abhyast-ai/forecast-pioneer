@@ -1,0 +1,61 @@
+Requirements:
+To fulfill these requirements:
+ 
+1. **Grouping and Drilldown:**
+   - Utilize AG Grid's grouping functionality to organize data by periods as columns and multiple drill-down levels as rows. Define the columns and rows based on the drill-down levels and period data.
+   - Configurable options should enable defining the labels and levels for the drill-down hierarchy.
+ 
+2. **Aggregation and Redistribution:**
+   - Track value changes at any level in the drill-down hierarchy.
+   - Implement logic to aggregate changes upwards and distribute proportionately downwards.
+   - When a value changes at any level, automatically adjust higher levels based on the change, redistributing the difference proportionately to lower levels.
+ 
+3. **Input Changes and Distribution:**
+   - Upon value modification at any level:
+     - Calculate the change's impact on higher levels based on the hierarchy.
+     - Distribute the change proportionately downwards in the hierarchy.
+ 
+4. **Copying Information:**
+   - Implement the functionality to copy data from any cell or set of cells to another cell or set of cells. For instance, copying data from one period to another should proportionately adjust the values based on the hierarchy.
+ 
+This requires:
+- Designing a configurable grid structure with drill-down levels and period columns.
+- Implementing logic to track and propagate value changes through the hierarchy.
+- Handling input changes and calculating distribution ratios based on previous periods' values.
+ 
+Sources:
+1. [Column Drill-down using Master-Detail in AG Grid](https://blog.ag-grid.com/column-drill-down-using-master-detail-ag-grid/)
+2. [JavaScript Data Grid: Pivoting](https://www.ag-grid.com/javascript-data-grid/pivoting/)
+3. [How to use Master/Detail feature with grouping in AG Grid](https://stackoverflow.com/questions/70536354/how-to-use-master-detail-feature-with-grouping-in-ag-grid-react)
+
+
+Appcomponent Basic Structure:
+
+### Explanation and Documentation:
+
+1. **Import Statements**: The code imports necessary modules from `@angular/core` and `@angular/forms` for building Angular components and handling form functionalities.
+
+2. **AppComponent Class**: 
+    - `dynamicForm`: Initializes a form group using Angular's `FormBuilder`.
+    - `ngOnInit()`: Sets up the initial form structure with a single row and cell.
+    - `createRow()`: Generates a form group representing a row.
+    - `createCell()`: Generates a form control representing a cell.
+    - `addCell()`: Dynamically adds a cell to a row.
+    - `addRow()`: Dynamically adds a row to the form.
+    - `onSubmit()`: Logs the value of the form's rows to the console.
+  
+3. **Formula Handling Functions**:
+    - `evaluateFormula(formula)`: Evaluates a formula, handles both individual cells and cell ranges for calculation.
+    - `copy(formula, assignedValue)`: Copies an assigned value to specified cells or cell ranges.
+    - `distribute(formula, assignedValue)`: Distributes a value across cells based on specified ratios.
+  
+4. **Utility Functions**:
+    - `getCellCoordinates(cell)`: Extracts the row and column coordinates from a cell reference.
+
+5. **cellValueChange(i, j, e)**: Listens to cell value changes and triggers specific actions based on predefined commands (`=Sum`, `=Distribute`, `=Copy`).
+
+This code provides functionalities to manage a dynamic form representing a grid structure and supports operations like cell calculations, copying values, and distributing values based on ratios.
+
+Sources:
+1. [Angular - TypeScript configuration](https://angular.io/guide/typescript-configuration)
+2. [Angular documentation style guide](https://angular.io/guide/docs-style-guide)
