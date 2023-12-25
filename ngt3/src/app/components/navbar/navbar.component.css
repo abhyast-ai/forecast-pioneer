@@ -1,39 +1,57 @@
-/* Navbar */
-.nav {
-    display: flex;
-    list-style-type: none;
-    margin: 0;
-    padding: 2px 20px;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000; 
-  }
+/* Reset default list styles */
+.navbar,
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
-  .nav-item-right1{
-    margin-left: 780px;
-    
-  }
-  
-  .nav-link {
-    display: block;
-    color: white; 
-    text-align: center;
-    padding: 13px 6px;
-    text-decoration: none;
-  }
+/* Navbar styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
-  .nav-item {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
-  }
-  
-  .nav-link:hover {
-    color: #b56c6c; 
-  }
+/* Logo styles */
+.logo a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+/* Links styles */
+.links li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.links a {
+  text-decoration: none;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.links a:hover {
+  color: #f90;
+}
+
+/* Action button styles */
+.action_btn {
+  text-decoration: none;
+  color: #fff;
+  background-color: #f90;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.action_btn:hover {
+  background-color: #ffaa00;
+}
