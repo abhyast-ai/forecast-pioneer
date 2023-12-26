@@ -1,0 +1,191 @@
+1
+00:00:00,150 --> 00:00:02,910
+Hi everyone. Welcome to our web
+
+2
+00:00:02,910 --> 00:00:03,790
+application.
+
+3
+00:00:04,590 --> 00:00:06,270
+This is a demo of how to use the
+
+4
+00:00:06,270 --> 00:00:08,310
+functionalities of the web application.
+
+5
+00:00:09,198 --> 00:00:11,358
+Click on new sheet and then add as many
+
+6
+00:00:11,358 --> 00:00:13,358
+columns and rows you want in the same way
+
+7
+00:00:13,358 --> 00:00:14,478
+shown in this video.
+
+8
+00:00:15,390 --> 00:00:17,270
+Note that each cell has a cell name
+
+9
+00:00:17,270 --> 00:00:19,910
+attached to it, such as A1 indicating a
+
+10
+00:00:19,990 --> 00:00:22,430
+cell formed by the 1st row and 1st column
+
+11
+00:00:22,430 --> 00:00:25,270
+and so on. These cell names will be
+
+12
+00:00:25,270 --> 00:00:26,950
+used for performing all required
+
+13
+00:00:26,950 --> 00:00:27,870
+operations.
+
+14
+00:00:28,670 --> 00:00:30,670
+Instead of manually writing values in
+
+15
+00:00:30,670 --> 00:00:33,030
+each cell, one has the option to use the
+
+16
+00:00:33,030 --> 00:00:35,870
+copy feature in this manner. Write the
+
+17
+00:00:35,870 --> 00:00:38,310
+needed value, then assign it using equals
+
+18
+00:00:38,310 --> 00:00:40,150
+to the copy function call which has
+
+19
+00:00:40,150 --> 00:00:42,110
+parameters such as the starting range and
+
+20
+00:00:42,110 --> 00:00:44,990
+the end range. Now use it for other
+
+21
+00:00:44,990 --> 00:00:46,590
+cells wherever required.
+
+22
+00:00:47,406 --> 00:00:49,486
+One can find the subtotal in a specific
+
+23
+00:00:49,486 --> 00:00:52,246
+cell by assigning equal sign to the value
+
+24
+00:00:52,246 --> 00:00:55,206
+returned by the SUM function. This value
+
+25
+00:00:55,206 --> 00:00:57,246
+will encompass the starting range and end
+
+26
+00:00:57,246 --> 00:00:58,766
+range required for the sum.
+
+27
+00:00:59,670 --> 00:01:01,990
+Similarly for the higher level sum, it
+
+28
+00:01:01,990 --> 00:01:04,110
+can be assigned in the required cell by
+
+29
+00:01:04,110 --> 00:01:06,630
+equal sign and passing the sublevel sums
+
+30
+00:01:06,630 --> 00:01:07,630
+in the sum method.
+
+31
+00:01:14,166 --> 00:01:16,726
+For higher levels, similarly assign the
+
+32
+00:01:16,726 --> 00:01:19,046
+required cell with new value and equal
+
+33
+00:01:19,046 --> 00:01:21,606
+sign to the distribute method, utilizing
+
+34
+00:01:21,606 --> 00:01:23,686
+function parameters like cell names to
+
+35
+00:01:23,686 --> 00:01:25,966
+reflect sublevel sums such as categorical
+
+36
+00:01:25,966 --> 00:01:28,406
+sums as demonstrated in the example.
+
+37
+00:01:29,310 --> 00:01:31,590
+Now we can distribute these new sub level
+
+38
+00:01:31,590 --> 00:01:33,830
+sums to find new values for each cell in
+
+39
+00:01:33,830 --> 00:01:35,830
+the lower levels by employing a similar
+
+40
+00:01:35,830 --> 00:01:38,110
+structure for distribution, incorporating
+
+41
+00:01:38,110 --> 00:01:40,270
+all the necessary cell names as method
+
+42
+00:01:40,270 --> 00:01:41,110
+parameters.
+
+43
+00:01:41,934 --> 00:01:44,134
+For efficient storage of results, it is
+
+44
+00:01:44,134 --> 00:01:46,534
+good practice to submit values after each
+
+45
+00:01:46,534 --> 00:01:47,294
+operation.
+
+46
+00:01:48,086 --> 00:01:50,406
+The application enables users to download
+
+47
+00:01:50,406 --> 00:01:52,886
+results in the form of a CSV for improved
+
+48
+00:01:52,886 --> 00:01:54,326
+sharing and comprehension.
