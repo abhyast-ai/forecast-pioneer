@@ -1,32 +1,31 @@
-<h3>My WorkPlace</h3>
+<div class="container mt-5">
+  <h3 class="text-primary mb-4">My Workplace</h3>
 
-<form [formGroup]="dynamicForm" (submit)="onSubmit()">
-  <div formArrayName="rows">
-    <div
-      *ngFor="let row of dynamicForm.get('rows').controls; let i = index"
-      class="row"
-    >
-      <div [formGroupName]="i">
-        <div formArrayName="cells" class="cell-container">
-          <div
-            *ngFor="let cell of row.get('cells').controls; let j = index"
-            class="cell"
-          >
-            <label>{{ getColumnName(j) + (i + 1) }}</label>
-            <input
-              [formControl]="cell"
-              placeholder="Cell {{ j + 1 }}"
-              (input)="cellValueChange(i, j, $event)"
-            />
+  <form [formGroup]="dynamicForm" (submit)="onSubmit()">
+    <div formArrayName="rows">
+      <div *ngFor="let row of dynamicForm.get('rows').controls; let i = index" class="row mb-4">
+        <div [formGroupName]="i" class="row gx-3">
+          <div formArrayName="cells" class="col-9 d-flex align-items-center">
+            <div *ngFor="let cell of row.get('cells').controls; let j = index" class="col-3">
+              <label class="text-dark">{{ getColumnName(j) + (i + 1) }}</label>
+              <div class="input-group">
+                <input [formControl]="cell" class="form-control" placeholder="Cell {{ j + 1 }}" (input)="cellValueChange(i, j, $event)" />
+                <span class="input-group-text"><i class="bi bi-pencil-fill"></i></span>
+              </div>
+            </div>
           </div>
+          <button type="button" class="btn btn-sm btn-primary me-3 px-2 py-1" (click)="addCell(row)">
+            Add Cell
+          </button>
         </div>
-        <button type="button" (click)="addCell(row)">Add Cell</button>
       </div>
     </div>
-  </div>
-  <button type="button" (click)="addRow()">Add Row</button>
-
-  <input type="submit" />
-
-  <button type="button" (click)="downloadCSV()">Download CSV</button>
-</form>
+    <button type="button" class="btn btn-sm btn-primary me-3" (click)="addRow()">
+      Add Row <i class="bi bi-journal-plus"></i>
+    </button>
+    <input type="submit" class="btn btn-sm btn-success me-3" value="Submit" />
+    <button type="button" class="btn btn-sm btn-info" (click)="downloadCSV()">
+      Download CSV <i class="bi bi-cloud-download"></i>
+    </button>
+  </form>
+</div>

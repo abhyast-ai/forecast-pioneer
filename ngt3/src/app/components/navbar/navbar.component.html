@@ -1,14 +1,39 @@
-<ul class="nav justify-content-end">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" routerLink="">Nagarro Excel</a>
-    </li>
-    <li class="nav-item" >
-      <a class="nav-link" routerLink="/formula">Formulas</a>
-    </li>
-    
-    <li class="nav-item" >
-      <a class="nav-link" routerLink="/sheet">New Sheet</a>
-    </li>
-
-    
-</ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="">Nagarro Excel</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link fs-5" routerLink="">
+            <span class="d-inline-block p-2">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fs-5" routerLink="/formula">
+            <span class="d-inline-block p-2">Formulas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fs-5" routerLink="/sheet">
+            <span class="d-inline-block p-2">New Sheet</span>
+          </a>
+        </li>
+      </ul>
+      <!-- <div class="d-flex">
+        <button class="btn btn-outline-light me-2">Login</button>
+        <button class="btn btn-light">Logout</button>
+      </div> -->
+    </div>
+  </div>
+</nav>

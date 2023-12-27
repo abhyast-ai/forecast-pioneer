@@ -1,37 +1,36 @@
 h3{
-    margin-top: 100px;
-    margin-left: 50px;
+  margin-top: 100px;
+  margin-left: 50px;
 }
 
 form{
-    margin-top: 10px;
-    margin-left: 50px;
+  margin-top: 10px;
+  margin-left: 50px;
 }
 
 .row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-   
-  .cell-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 30px;
-    
-  }
-   
-  .cell {
-    margin-right: 10px;
-    
-  }
-   
-  label {
-    margin-right: 5px;
-  }
-   
-  button {
-    margin-left: 25px;
-  }
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+ 
+.cell-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 30px;
   
+}
+ 
+.cell {
+  margin-right: 10px;
+  
+}
+ 
+label {
+  margin-right: 5px;
+}
+
+.container{
+  margin-left: 3%;
+}

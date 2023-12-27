@@ -1,39 +1,12 @@
-/* Navbar */
-.nav {
-    display: flex;
-    list-style-type: none;
-    margin: 0;
-    padding: 2px 20px;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0;
+.navbar-nav {
     width: 100%;
-    z-index: 1000; 
+    display: flex;
+    justify-content: center;
   }
-
-  .nav-item-right1{
-    margin-left: 780px;
-    
-  }
-  
-  .nav-link {
-    display: block;
-    color: white; 
+  .navbar-nav .nav-item {
     text-align: center;
-    padding: 13px 6px;
-    text-decoration: none;
   }
-
-  .nav-item {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
+  .nav-link {
+    display: inline-block;
   }
   
-  .nav-link:hover {
-    color: #b56c6c; 
-  }
