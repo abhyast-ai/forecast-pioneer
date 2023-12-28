@@ -1,5 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-datasheet',
   templateUrl: './datasheet.component.html',
@@ -10,7 +18,7 @@ export class DatasheetComponent implements OnInit {
   columnDef: any[] = [];
   rowData: any[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private toastr: ToastrService) {}
 
   ngOnInit() {
     this.dynamicForm = this.fb.group({
@@ -51,6 +59,29 @@ export class DatasheetComponent implements OnInit {
       const rowValues = row?.cells;
       this.rowData.push(rowValues); // Appending cell values from each row (excluding the first row) to rowData using 'push'
     }
+    this.toastr.success('Values have been saved!', 'Success');
+  }
+  resetCells() {
+    const rows = this.dynamicForm.get('rows') as FormArray;
+
+    // Remove all rows except the first one
+    while (rows.length > 1) {
+      rows.removeAt(1);
+    }
+
+    // Clear the cells in the first row
+    const firstRow = rows.at(0) as FormGroup;
+    const cells = firstRow.get('cells') as FormArray;
+    while (cells.length > 0) {
+      cells.removeAt(0);
+    }
+
+    // Optionally reset any other related data or variables
+    this.columnDef = [];
+    this.rowData = [];
+
+    // Optionally show a success message
+    this.toastr.warning('Cells have been reset!', 'Success');
   }
 
   evaluateFormula(formula: string): number {

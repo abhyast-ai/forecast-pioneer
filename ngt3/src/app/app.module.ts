@@ -8,6 +8,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormulasComponent } from './components/formulas/formulas.component';
 import { DatasheetComponent } from './components/datasheet/datasheet.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,15 @@ import { NavbarComponent } from './components/navbar/navbar.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 1000, // Time to close the notification (milliseconds)
+      positionClass: 'toast-top-right', // Position of the notifications
+      preventDuplicates: true, // Prevent duplicate notifications
+      closeButton: true, // Show close button
+      progressBar: true, // Show a progress bar
+      // Other options...
+    }),
     HttpClientModule,
     ReactiveFormsModule
   ],

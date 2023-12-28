@@ -1,11 +1,15 @@
-h3{
+h3 {
   margin-top: 100px;
   margin-left: 50px;
 }
 
-form{
+form {
   margin-top: 10px;
   margin-left: 50px;
+}
+.small-btn {
+  font-size: 0.75rem; /* Adjust the font size */
+  padding: 0.25rem 0.5rem; /* Adjust padding to make it smaller */
 }
 
 .row {
@@ -13,24 +17,22 @@ form{
   align-items: center;
   margin-bottom: 10px;
 }
- 
+
 .cell-container {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 30px;
-  
 }
- 
+
 .cell {
   margin-right: 10px;
-  
 }
- 
+
 label {
   margin-right: 5px;
 }
 
-.container{
-  margin-left: 3%;
+.container {
+  margin-left: 1%;
 }
