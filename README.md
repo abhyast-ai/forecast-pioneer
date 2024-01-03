@@ -11,11 +11,13 @@ Develop an application prototype to view and manage forecasts for various attrib
 The prototype showcases an advanced grid layout similar to a Pivot table, organizing forecasts by periods (columns) and offering multi-level drill-downs (rows) for detailed analysis.
 
 #### Expected Interface 🖥️
-![Expected Interface](content.png)
+<img width="480" alt="content" src="https://github.com/abhyast-ai/forecast-pioneer/assets/147532409/3f5d92cb-8d90-4a0c-b382-994366d5487a">
+
 🔍 The anticipated interface demonstrates a configurable grid enabling diverse drill-down levels and seamless value aggregation upon modifications.
 
 #### Actual Prototype 🚀
-![Actual Prototype](actual_content.png)
+<img width="960" alt="actual_content" src="https://github.com/abhyast-ai/forecast-pioneer/assets/147532409/ff583824-bd59-4e3e-b34f-e3438b5044db">
+
 🌟 Our application prototype mirrors the expected design, ensuring configurable drill-downs, automated value aggregation, and efficient data copying functionalities between cells.
 
 ### Rules & Requirements 📋
@@ -45,13 +47,17 @@ The prototype showcases an advanced grid layout similar to a Pivot table, organi
 - UI Breakdown for large width worksheets.
 
 ### Formulas Available:
-# | Action         | Formula                                 | Description
---|----------------|-----------------------------------------|-----------------------------------------
-1 | Sum            | =Sum(Ai : Aj) where 1 ≤ i < j ≤ n      | To get the sum of a particular category.
-2 | Grand Total    | =Sum(Ai , Aj) where 1 ≤ i < j ≤ n      | To get the sum of categories.
-3 | Copy           | p=Copy(Ai:Aj) where 1 ≤ i < j ≤ n, p    | To copy a row's value into multiple rows.
-4 | Distribute     | p=Distribute(Ai.....Aj) where 1 ≤ i < j ≤ n, p | To distribute Grand total among other rows based on ratios.
+
+
+<img width="483" alt="image" src="https://github.com/abhyast-ai/forecast-pioneer/assets/147532409/cfcde4ce-20d3-4503-9746-a2a7554b0f2a">
+
+- 1 | Sum            | 📊 To get the sum of a particular category.
+- 2 | Grand Total    | 📈 To get the sum of categories.
+- 3 | Copy           | 📋 To copy a row's value into multiple rows.
+- 4 | Distribute     | 🔄 To distribute Grand total among other rows based on ratios.
 
 ### Prototype Demonstration
-[Prototype Demo](./ngt3/src/assets/videos/NGT_demo.mp4) - This video showcases the prototype's controls and functionalities.
+
+https://github.com/abhyast-ai/forecast-pioneer/assets/147532409/f0682105-02e8-404c-b658-13b3c82fa743
+ - This video showcases the prototype's controls and functionalities.
 
