@@ -10,7 +10,7 @@ export class DatasheetComponent implements OnInit {
   dynamicForm: any;
   columnDef: any[] = [];
   rowData: any[] = [];
-
+  targetColumnIndex: any;
   constructor(private fb: FormBuilder, private toastr: ToastrService) {}
 
   /**
@@ -243,7 +243,7 @@ export class DatasheetComponent implements OnInit {
    * @param formula - String formula specifying cell references.
    * @param assignedValue - The value to distribute among cells.
    */
-  distribute(formula: string, assignedValue: number): any {
+  distribute(formulaType: string, formula: string, assignedValue: number): any {
     // Extract cell references from the formula
     const cellRefs = formula.split(',').map((ref) => ref.trim());
     let values = []; // Store values and positions
@@ -288,10 +288,14 @@ export class DatasheetComponent implements OnInit {
     }));
 
     // Distribute assigned value based on ratios in a different column
-    const targetColumn = 'B'; // Define the target column for distributed values
+
     ratios.forEach((cell) => {
       const distributedValue = Math.round(assignedValue * cell.ratio);
-      const targetColumnIndex = p.charCodeAt(0) - 'A'.charCodeAt(0) + 1; // Get the target column index
+      if (formulaType === 'Forecast') {
+        this.targetColumnIndex = p.charCodeAt(0) - 'A'.charCodeAt(0) + 1; // Get the target column index
+      } else if (formulaType === 'Distribute') {
+        this.targetColumnIndex = p.charCodeAt(0) - 'A'.charCodeAt(0);
+      }
       const distributedFormGroup = this.dynamicForm
         .get('rows')
         ?.get(cell.rowIndex.toString()) as FormGroup;
@@ -299,7 +303,7 @@ export class DatasheetComponent implements OnInit {
         // Set the distributed value in the specified column
         distributedFormGroup
           .get('cells')
-          ?.get(targetColumnIndex.toString())
+          ?.get(this.targetColumnIndex.toString())
           ?.setValue(distributedValue);
       }
     });
@@ -318,7 +322,9 @@ export class DatasheetComponent implements OnInit {
     const sumMatch = value.match(/^=Sum\(([\w\d:,\s]+)\)$/);
 
     // Check if the entered value matches a Distribute formula pattern
-    const distributeMatch = value.match(/^(\d+)=Distribute\(([\w\d:,\s]+)\)$/);
+    const distributeMatch = value.match(
+      /^(\d+)=(Distribute|Forecast)\(([\w\d:,\s]+)\)$/
+    );
 
     // Check if the entered value matches a Copy formula pattern
     const copyMatch = value.match(/^([\w\d]+)=Copy\(([\w\d:\s]+)\)$/);
@@ -337,8 +343,9 @@ export class DatasheetComponent implements OnInit {
     } else if (distributeMatch) {
       // If the value matches the Distribute formula pattern, distribute the assigned value among cells and set it to the current cell
       const assignedValue = parseInt(distributeMatch[1], 10);
-      const cellRefs = distributeMatch[2];
-      this.distribute(cellRefs, assignedValue);
+      const formulaType = distributeMatch[2];
+      const cellRefs = distributeMatch[3];
+      this.distribute(formulaType, cellRefs, assignedValue);
       const currentRow = this.dynamicForm
         .get('rows')
         ?.get(i.toString()) as FormGroup;
