@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-datasheet',
   templateUrl: './datasheet.component.html',
@@ -21,13 +22,102 @@ export class DatasheetComponent implements OnInit {
       rows: this.fb.array([this.createRow()]),
     });
   }
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      this.readExcelFile(file);
+    }
+  }
+  readExcelFile(file: File) {
+    const reader = new FileReader();
+
+    reader.onload = (e: any) => {
+      const data = e.target.result;
+      // You can use a library like xlsx to parse the Excel data.
+      // For simplicity, let's assume the data is an array of objects.
+      const parsedData = this.parseExcelData(data);
+      
+      this.populateForm(parsedData);
+    };
+
+    reader.readAsBinaryString(file);
+  }
+   parseExcelData(data: any): any[] {
+    // You may need to use a library like xlsx for more complex scenarios.
+    // For simplicity, let's assume the data is an array of objects.
+    // You may need to adjust this logic based on the actual structure of your Excel data.
+    // Example assumes the first row is the header.
+    const workbook = XLSX.read(data, { type: 'binary' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    // const excelData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    const excelData = XLSX.utils.sheet_to_json(sheet, {
+      header: 1,
+      raw: false, // Keep raw values, don't convert them
+      dateNF: 'mm-dd-yyyy', // Specify the date format if needed
+    });
+    const header:any = excelData[0];
+    const rowData = excelData.slice(1);
+    
+    rowData.unshift(header);
+    console.log(rowData);
+    return rowData.map((row: any) => {
+      const rowArr: any = [];
+    
+      // header.forEach((key: any, index: number) => {
+       
+      //   rowArr.push(row[index]);
+      // });
+      return { cells: row };
+    });
+  }
+  /**
+ * Populate the form with data.
+ * @param data An array of objects representing data.
+ */
+populateForm(data: any[]) {
+  const rows = this.dynamicForm.get('rows') as FormArray;
+
+  // Clear existing rows
+  while (rows.length > 0) {
+    rows.removeAt(0);
+  }
+
+  if (data.length === 0) {
+    return; // No data to populate
+  }
+
+  const firstRowObject = data[0];
+  const columnOrder = Object.keys(firstRowObject.cells);
+
+  // Create a new row for each object in the data array
+  data.forEach((rowObject) => {
+    const newRow = this.fb.group({
+      cells: this.fb.array([]),
+    });
+
+    const cells = newRow.get('cells') as FormArray;
+
+    // Iterate over columns in the order they appear in the Excel data
+    columnOrder.forEach((columnName) => {
+      cells.push(this.createCell(rowObject.cells[columnName]));
+    });
+
+    // Add the new row to the form
+    rows.push(newRow);
+  });
+
+  // Set column definitions based on the specified column order
+  this.columnDef = columnOrder;
+}
 
   /**
    * Creates a row with cells
    * @returns create a row having 'n' cells where n -> no. of columns
    */
   createRow(): FormGroup {
-    const firstRow = this.fb.array([this.createCell()]);
+    const firstRow = this.fb.array([this.createCell(null)]);
     return this.fb.group({
       cells: firstRow,
     });
@@ -37,10 +127,14 @@ export class DatasheetComponent implements OnInit {
    * Creates an empty cell
    * @returns a form control representing a cell
    */
-  createCell(): FormControl {
+  createCell(value:any): FormControl {
+    if(value){
+       return this.fb.control(value);
+    }
+    else{return this.fb.control(''); // Create an empty cell
+  }}
     // Create a form control representing a cell
-    return this.fb.control(''); // Create an empty cell
-  }
+    
 
   /**
    * Add a new cell to a row
@@ -48,7 +142,7 @@ export class DatasheetComponent implements OnInit {
    */
   addCell(row: FormGroup) {
     const cells = row.get('cells') as FormArray;
-    cells.push(this.createCell());
+    cells.push(this.createCell(null));
   }
 
   /**
@@ -67,7 +161,7 @@ export class DatasheetComponent implements OnInit {
 
     // Add the same number of cells as in the first row to the new row
     for (let i = 0; i < numOfColumns; i++) {
-      (newRow.get('cells') as FormArray).push(this.createCell());
+      (newRow.get('cells') as FormArray).push(this.createCell(null));
     }
 
     rows.push(newRow);
