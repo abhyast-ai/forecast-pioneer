@@ -10,6 +10,9 @@ import { DatasheetComponent } from './components/datasheet/datasheet.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DatastorageService } from './shared/services/datastorage.service';
+import { DataformService } from './shared/services/dataform.service';
+import { DataforumlaService } from './shared/services/dataforumla.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [DatastorageService,DataformService,DataforumlaService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
