@@ -15,6 +15,7 @@ export class DatasheetComponent implements OnInit {
   columnDef: any[] = [];
   rowData: any[] = [];
   targetColumnIndex: any;
+  file:any;
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -34,10 +35,10 @@ export class DatasheetComponent implements OnInit {
   }
   
   onFileChange(event: any) {
-    const file = event.target.files[0];
+    this.file = event.target.files[0];
 
-    if (file) {
-      this.readExcelFile(file);
+    if (this.file) {
+      this.readExcelFile(this.file);
     }
   }
 
@@ -45,7 +46,7 @@ export class DatasheetComponent implements OnInit {
     const reader = new FileReader();
 
     reader.onload = (e: any) => {
-      const data = e.target.result;      
+    const data = e.target.result;      
       const parsedData = this.dataStorageService.parseExcelData(data);
       this.dataFormService.populateForm(this.dynamicForm,parsedData,this.columnDef);
     };
@@ -215,5 +216,13 @@ export class DatasheetComponent implements OnInit {
   // Function to download CSV file
   downloadCSV(): void {
     this.dataStorageService.convertToCSV(this.rowData,this.columnDef);    
+  }
+
+  /**
+   * it will converts the original data into csv format as download it in local machine
+   */
+  // Function to download CSV file
+  downloadExcel(): void {
+    this.dataStorageService.updateAndDownloadExcelFile(this.file,this.columnDef,this.rowData);    
   }
 }

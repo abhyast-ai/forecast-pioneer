@@ -6,15 +6,10 @@ import * as XLSX from 'xlsx';
 })
 export class DatastorageService {
   constructor() {}
-  parseExcelData(data: any): any[] {
-    // You may need to use a library like xlsx for more complex scenarios.
-    // For simplicity, let's assume the data is an array of objects.
-    // You may need to adjust this logic based on the actual structure of your Excel data.
-    // Example assumes the first row is the header.
+  parseExcelData(data: any): any[] {    
     const workbook = XLSX.read(data, { type: 'binary' });
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
-    // const excelData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
     const excelData = XLSX.utils.sheet_to_json(sheet, {
       header: 1,
       raw: false, // Keep raw values, don't convert them
@@ -24,25 +19,20 @@ export class DatastorageService {
     const rowData = excelData.slice(1);
 
     rowData.unshift(header);
-    console.log(rowData);
     return rowData.map((row: any) => {
       const rowArr: any = [];
 
-      // header.forEach((key: any, index: number) => {
-
-      //   rowArr.push(row[index]);
-      // });
       return { cells: row };
     });
   }
 
-   /**
+  /**
    * converts the data  in csv format
    * @param data list of rowDef and columnDef
    * @returns a string having header(columns) and rows
    */
   // Function to convert data to CSV format
-  convertToCSV(data: string[][],columnDef: any[]): void {
+  convertToCSV(data: string[][], columnDef: any[]): void {
     const header = columnDef.join(','); // Create CSV header
     const rows = data.map((row) => row.join(',')); // Convert rows to CSV format
     const csvData = `${header}\n${rows.join('\n')}`; // Combine header and rows
@@ -60,4 +50,83 @@ export class DatastorageService {
     document.body.removeChild(link);
   }
 
+  updateAndDownloadExcelFile(
+    file: File,
+    columnDef: string[],
+    rowData: any[]
+  ): void {
+    const reader: FileReader = new FileReader();
+
+    reader.onload = (e: any) => {
+      const data = e.target.result;
+      const parsedData = this.parseExcelData(data);
+
+      this.updateExcelData(parsedData, columnDef, rowData);
+
+      //Trigger download
+      this.downloadExcelFile(parsedData);
+    };
+
+    reader.readAsBinaryString(file);
+  }
+  private updateExcelData(data: any, columnDef: any[], rowData: any[]): any {
+    // Extract header and rows from data
+    const header = data[0].cells;
+    const rows = data.slice(1);
+
+    // Update header based on columnDef
+    header.forEach((col: any, index: any) => {
+      if (columnDef[index]) {
+        header[index] = columnDef[index];
+      }
+    });
+
+    // Update rowData
+    rows.forEach((row: any, rowIndex: any) => {
+      row.cells.forEach((cell: any, colIndex: any) => {
+        if (rowData[rowIndex] && rowData[rowIndex][colIndex]) {
+          row.cells[colIndex] = rowData[rowIndex][colIndex];
+        }
+      });
+    });
+
+    // Convert the updated data back to the Excel format
+    return [header, ...rows];
+  }
+
+  private downloadExcelFile(data: any): void {
+    const updatedData = this.convertToExcelFormat(data);
+    const blob = new Blob([this.s2ab(updatedData)], {
+      type: 'application/octet-stream',
+    });
+    const link = document.createElement('a');
+
+    link.href = URL.createObjectURL(blob);
+    link.download = 'updated_excel_file.xlsx';
+    link.click();
+  }
+  private convertToExcelFormat(data: any): any {
+    const header = data[0]?.cells ?? [];
+    const rows = data.slice(1) || [];
+
+    const sheetData = rows.map((row: any) => {
+      return header.map((col: any, index: number) => row?.cells[index]);
+    });
+
+    const sheet = XLSX.utils.aoa_to_sheet([header, ...sheetData]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Sheet1');
+
+    return workbook;
+  }
+
+  private s2ab(workbook: any): ArrayBuffer {
+    const s = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+
+    for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
+
+    return buf;
+  }
 }
