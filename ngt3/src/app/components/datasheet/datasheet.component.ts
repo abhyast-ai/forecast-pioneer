@@ -15,13 +15,16 @@ export class DatasheetComponent implements OnInit {
   columnDef: any[] = [];
   rowData: any[] = [];
   targetColumnIndex: any;
-  file:any;
+  file: any;
+  isDropdownOpen = false;
+  autosaveTimeout: any;
+
   constructor(
     private fb: FormBuilder,
     private toastr: ToastrService,
     private dataStorageService: DatastorageService,
-    private dataFormService:DataformService,
-    private dataFormulaService:DataforumlaService
+    private dataFormService: DataformService,
+    private dataFormulaService: DataforumlaService
   ) {}
 
   /**
@@ -32,26 +35,37 @@ export class DatasheetComponent implements OnInit {
       rows: this.fb.array([this.createRow()]),
     });
 
+    // Start autosave on form initialization
+    this.startAutosave();
   }
-  
+
+  //Detect File Change
   onFileChange(event: any) {
     this.file = event.target.files[0];
-
     if (this.file) {
       this.readExcelFile(this.file);
     }
   }
 
+  //Read the File and Parse for manipulation
   readExcelFile(file: File) {
     const reader = new FileReader();
 
     reader.onload = (e: any) => {
-    const data = e.target.result;      
+      const data = e.target.result;
       const parsedData = this.dataStorageService.parseExcelData(data);
-      this.dataFormService.populateForm(this.dynamicForm,parsedData,this.columnDef);
+      this.dataFormService.populateForm(
+        this.dynamicForm,
+        parsedData,
+        this.columnDef
+      );
     };
 
     reader.readAsBinaryString(file);
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
 
   /**
@@ -59,7 +73,9 @@ export class DatasheetComponent implements OnInit {
    * @returns create a row having 'n' cells where n -> no. of columns
    */
   createRow(): FormGroup {
-    const firstRow = this.fb.array([this.dataFormService.createBlankCell(null)]);
+    const firstRow = this.fb.array([
+      this.dataFormService.createBlankCell(null),
+    ]);
     return this.fb.group({
       cells: firstRow,
     });
@@ -80,6 +96,18 @@ export class DatasheetComponent implements OnInit {
   addRow() {
     // Use the form service to add a new row
     this.dataFormService.addRow(this.dynamicForm);
+  }
+  // Add autosave logic
+  startAutosave() {
+    this.dynamicForm.valueChanges.subscribe(() => {
+      // Clear existing timeout to avoid unnecessary submissions
+      clearTimeout(this.autosaveTimeout);
+
+      // Set a new timeout for autosave after 3 seconds
+      this.autosaveTimeout = setTimeout(() => {
+        this.onSubmit();
+      }, 3000);
+    });
   }
 
   /**
@@ -125,7 +153,7 @@ export class DatasheetComponent implements OnInit {
 
     // show a warning message
     this.toastr.warning('Cells have been reset!', 'Success');
-  }  
+  }
 
   /**
    * Handles changes in cell values based on specified patterns.
@@ -150,7 +178,10 @@ export class DatasheetComponent implements OnInit {
     if (sumMatch) {
       // If the value matches the Sum formula pattern, evaluate the sum and set the value to the current cell
       const cellRefs = sumMatch[1];
-      const sum = this.dataFormulaService.evaluateFormula(this.dynamicForm,cellRefs);
+      const sum = this.dataFormulaService.evaluateFormula(
+        this.dynamicForm,
+        cellRefs
+      );
       const currentRow = this.dynamicForm
         .get('rows')
         ?.get(i.toString()) as FormGroup;
@@ -163,7 +194,13 @@ export class DatasheetComponent implements OnInit {
       const assignedValue = parseInt(distributeMatch[1], 10);
       const formulaType = distributeMatch[2];
       const cellRefs = distributeMatch[3];
-      this.dataFormulaService.distribute(this.dynamicForm,formulaType, cellRefs, assignedValue,this.targetColumnIndex);
+      this.dataFormulaService.distribute(
+        this.dynamicForm,
+        formulaType,
+        cellRefs,
+        assignedValue,
+        this.targetColumnIndex
+      );
       const currentRow = this.dynamicForm
         .get('rows')
         ?.get(i.toString()) as FormGroup;
@@ -173,7 +210,7 @@ export class DatasheetComponent implements OnInit {
       // If the value matches the Copy formula pattern, copy the assigned value to cells and set it to the current cell
       const assignedValue = copyMatch[1];
       const cellRefs = copyMatch[2];
-      this.dataFormulaService.copy(this.dynamicForm,cellRefs, assignedValue);
+      this.dataFormulaService.copy(this.dynamicForm, cellRefs, assignedValue);
       const currentRow = this.dynamicForm
         .get('rows')
         ?.get(i.toString()) as FormGroup;
@@ -209,20 +246,30 @@ export class DatasheetComponent implements OnInit {
     }
     return columnName; // Return single letter column name for indices up to 26
   }
- 
-  /**
-   * it will converts the original data into csv format as download it in local machine
-   */
-  // Function to download CSV file
-  downloadCSV(): void {
-    this.dataStorageService.convertToCSV(this.rowData,this.columnDef);    
-  }
 
   /**
    * it will converts the original data into csv format as download it in local machine
    */
   // Function to download CSV file
+  downloadCSV(): void {
+    this.isDropdownOpen = true; // Close dropdown after selection
+    this.dataStorageService.convertToCSV(this.rowData, this.columnDef);
+  }
+
+  /**
+   * it will converts the original data into excel format as download it in local machine
+   */
+  // Function to download Excel file
   downloadExcel(): void {
-    this.dataStorageService.updateAndDownloadExcelFile(this.file,this.columnDef,this.rowData);    
+    this.isDropdownOpen = true; // Close dropdown after selection
+    if (this.file == null) {
+      //toastr message to show empty file
+      this.toastr.error('Empty File!', 'Error');
+    }
+    this.dataStorageService.updateAndDownloadExcelFile(
+      this.file,
+      this.columnDef,
+      this.rowData
+    );
   }
 }

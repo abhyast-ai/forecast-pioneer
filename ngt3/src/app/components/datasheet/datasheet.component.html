@@ -1,4 +1,11 @@
-<input type="file" name="file" id="fileHandle" (change)="onFileChange($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+<div class="input-group">
+  <label for="fileHandle" class="file-input-container input-group-prepend">    
+  </label>
+  <div class="custom-file">
+    <input type="file" class="custom-file-input" id="fileHandle" (change)="onFileChange($event)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+    
+  </div>
+</div>
 
 <div class="container mt-5">
   <h3 class="text-primary mb-4">My Workplace</h3>
@@ -19,8 +26,7 @@
               class="col-3 excel-cell"
             >
               <label class="text-dark">{{ getColumnName(j) + (i + 1) }}</label>
-              <div class="input-group">
-                <!-- Add #inputField to the input element -->
+              <div class="input-group">                
                 <input
                   #inputField
                   [formControl]="cell"
@@ -53,12 +59,14 @@
       Reset Cells
     </button>
 
-    <button type="button" class="btn btn-sm btn-success me-3" (click)="onSubmit()">Submit</button>
-    <button type="button" class="btn btn-sm btn-info" (click)="downloadCSV()">
-      Download CSV <i class="bi bi-cloud-download"></i>
-    </button>
-    <button type="button" class="btn btn-sm btn-danger" (click)="downloadExcel()">
-      Download Excel <i class="bi bi-cloud-download"></i>
-    </button>
- 
+    <button type="button" class="btn btn-sm btn-success me-3 " (click)="onSubmit()">Submit</button>
+    <div class="btn-group" (click)="toggleDropdown()">
+      <button type="button" class="btn btn-sm btn-primary dropdown-toggle">
+        Export <i class="bi bi-cloud-download"></i>
+      </button>
+      <ul class="dropdown-menu" [ngClass]="{ 'show': isDropdownOpen }">
+        <li><a class="dropdown-item" (click)="downloadCSV()">Download CSV <i class="bi bi-file-earmark-text"></i></a></li>
+        <li><a class="dropdown-item" (click)="downloadExcel()">Download Excel <i class="bi bi-file-earmark-excel"></i></a></li>
+      </ul>
+    </div>
 </div>

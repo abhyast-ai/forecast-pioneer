@@ -1,15 +1,15 @@
-h3 {
-  margin-top: 100px;
+h3 {  
   margin-left: 50px;
 }
+
 
 form {
   margin-top: 10px;
   margin-left: 50px;
 }
 .small-btn {
-  font-size: 0.75rem; /* Adjust the font size */
-  padding: 0.25rem 0.5rem; /* Adjust padding to make it smaller */
+  font-size: 0.75rem; 
+  padding: 0.25rem 0.5rem; 
 }
 
 .row {
